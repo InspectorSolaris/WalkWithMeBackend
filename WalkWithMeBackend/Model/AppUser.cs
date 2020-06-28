@@ -15,5 +15,7 @@ namespace WalkWithMeBackend.Model
         public IEnumerable<CategoryPriority> CategoryPriorities { get; set; }
 
         public IEnumerable<Score> Scores { get; set; }
+
+        public IEnumerable<Promocode> Promocodes { get; set; }
     }
 }
