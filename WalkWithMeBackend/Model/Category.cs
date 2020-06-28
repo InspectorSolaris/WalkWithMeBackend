@@ -9,9 +9,9 @@ namespace WalkWithMeBackend.Model
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public Guid CategoryPriorityId { get; set; }
+        public IEnumerable<PointOfInterestCategory> PointOfInterests { get; set; }
 
-        public CategoryPriority CategoryPriority { get; set; }
+        public IEnumerable<CategoryPriority> CategoryPriorities { get; set; }
 
         public string Name { get; set; }
     }

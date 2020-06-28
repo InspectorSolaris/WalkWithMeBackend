@@ -8,6 +8,8 @@ namespace WalkWithMeBackend.Model
 {
     public class PointOfInterest : GeoPoint
     {
+        public IEnumerable<PointOfInterestCategory> Categories { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
