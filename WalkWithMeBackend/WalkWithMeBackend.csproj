@@ -10,11 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Itinero" Version="1.5.0" />
+    <PackageReference Include="Itinero.IO.Osm" Version="1.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
+    <PackageReference Include="OsmSharp" Version="6.2.0" />
   </ItemGroup>
 
   <ItemGroup>
