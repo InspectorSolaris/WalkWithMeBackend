@@ -7,8 +7,6 @@ namespace WalkWithMeBackend.Model
 {
     public class CategoryPriority
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-
         public Guid AppUserId { get; set; }
 
         public AppUser AppUser { get; set; }
