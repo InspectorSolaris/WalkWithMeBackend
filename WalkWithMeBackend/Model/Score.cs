@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,12 +10,15 @@ namespace WalkWithMeBackend.Model
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
+        [Required]
         public Guid AppUserId { get; set; }
 
         public AppUser AppUser { get; set; }
 
+        [Required]
         public DateTime Date { get; set; }
 
+        [Required]
         public long Amount { get; set; }
     }
 }
