@@ -183,19 +183,18 @@ namespace WalkWithMeBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    AppUserId = table.Column<Guid>(nullable: false),
-                    AppUserId1 = table.Column<string>(nullable: true),
+                    AppUserId = table.Column<string>(nullable: false),
                     Length = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Routes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Routes_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_Routes_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,8 +202,7 @@ namespace WalkWithMeBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    AppUserId = table.Column<Guid>(nullable: false),
-                    AppUserId1 = table.Column<string>(nullable: true),
+                    AppUserId = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Amount = table.Column<long>(nullable: false)
                 },
@@ -212,31 +210,30 @@ namespace WalkWithMeBackend.Migrations
                 {
                     table.PrimaryKey("PK_Scores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Scores_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_Scores_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CategoryPriorities",
                 columns: table => new
                 {
-                    AppUserId = table.Column<Guid>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: false),
                     CategoryId = table.Column<Guid>(nullable: false),
-                    AppUserId1 = table.Column<string>(nullable: true),
                     Priority = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CategoryPriorities", x => new { x.AppUserId, x.CategoryId });
                     table.ForeignKey(
-                        name: "FK_CategoryPriorities_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_CategoryPriorities_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CategoryPriorities_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -383,11 +380,6 @@ namespace WalkWithMeBackend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryPriorities_AppUserId1",
-                table: "CategoryPriorities",
-                column: "AppUserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CategoryPriorities_CategoryId",
                 table: "CategoryPriorities",
                 column: "CategoryId");
@@ -418,14 +410,14 @@ namespace WalkWithMeBackend.Migrations
                 column: "GeoPointId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Routes_AppUserId1",
+                name: "IX_Routes_AppUserId",
                 table: "Routes",
-                column: "AppUserId1");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Scores_AppUserId1",
+                name: "IX_Scores_AppUserId",
                 table: "Scores",
-                column: "AppUserId1");
+                column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
