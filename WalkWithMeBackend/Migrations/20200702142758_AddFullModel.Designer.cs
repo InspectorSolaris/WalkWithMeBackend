@@ -10,7 +10,7 @@ using WalkWithMeBackend.Data;
 namespace WalkWithMeBackend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200630082100_AddFullModel")]
+    [Migration("20200702142758_AddFullModel")]
     partial class AddFullModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,21 +235,16 @@ namespace WalkWithMeBackend.Migrations
 
             modelBuilder.Entity("WalkWithMeBackend.Model.CategoryPriority", b =>
                 {
-                    b.Property<Guid>("AppUserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("AppUserId1")
-                        .HasColumnType("text");
 
                     b.Property<double>("Priority")
                         .HasColumnType("double precision");
 
                     b.HasKey("AppUserId", "CategoryId");
-
-                    b.HasIndex("AppUserId1");
 
                     b.HasIndex("CategoryId");
 
@@ -343,10 +338,8 @@ namespace WalkWithMeBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AppUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("AppUserId1")
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("Length")
@@ -354,7 +347,7 @@ namespace WalkWithMeBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId1");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Routes");
                 });
@@ -383,10 +376,8 @@ namespace WalkWithMeBackend.Migrations
                     b.Property<long>("Amount")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("AppUserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("AppUserId1")
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Date")
@@ -394,7 +385,7 @@ namespace WalkWithMeBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId1");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Scores");
                 });
@@ -493,7 +484,9 @@ namespace WalkWithMeBackend.Migrations
                 {
                     b.HasOne("WalkWithMeBackend.Model.AppUser", "AppUser")
                         .WithMany("CategoryPriorities")
-                        .HasForeignKey("AppUserId1");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("WalkWithMeBackend.Model.Category", "Category")
                         .WithMany("CategoryPriorities")
@@ -534,7 +527,9 @@ namespace WalkWithMeBackend.Migrations
                 {
                     b.HasOne("WalkWithMeBackend.Model.AppUser", "AppUser")
                         .WithMany("Routes")
-                        .HasForeignKey("AppUserId1");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WalkWithMeBackend.Model.RouteGeoPoint", b =>
@@ -556,7 +551,9 @@ namespace WalkWithMeBackend.Migrations
                 {
                     b.HasOne("WalkWithMeBackend.Model.AppUser", "AppUser")
                         .WithMany("Scores")
-                        .HasForeignKey("AppUserId1");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WalkWithMeBackend.Model.CompanyPoint", b =>
