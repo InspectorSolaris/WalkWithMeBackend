@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WalkWithMeBackend.Data;
 using WalkWithMeBackend.Model;
+using WalkWithMeBackend.Model.DTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,14 +26,16 @@ namespace WalkWithMeBackend.Controllers
 
         // GET: api/<AppUserController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> Get()
+        public async Task<ActionResult<IEnumerable<AppUserDTO>>> Get()
         {
-            return await Context.AppUsers.ToListAsync();
+            return await Context.AppUsers
+                .Select(x => new AppUserDTO(x))
+                .ToListAsync();
         }
 
         // GET api/<AppUserController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> Get(string id)
+        public async Task<ActionResult<AppUserDTO>> Get(string id)
         {
             var appUser = await Context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
             if (appUser == null)
@@ -40,17 +43,19 @@ namespace WalkWithMeBackend.Controllers
                 return NotFound();
             }
 
-            return appUser;
+            return new AppUserDTO(appUser);
         }
 
         // POST api/<AppUserController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] AppUser appUser)
+        public async Task<ActionResult> Post([FromBody] AppUserDTO appUserDTO)
         {
-            if (Context.AppUsers.Any(x => x.Id == appUser.Id))
+            var appUser = new AppUser
             {
-                return BadRequest();
-            }
+                UserName = appUserDTO.UserName,
+                Email = appUserDTO.Email,
+                Created = DateTime.Now
+            };
 
             Context.AppUsers.Add(appUser);
 
@@ -60,20 +65,16 @@ namespace WalkWithMeBackend.Controllers
 
         // PUT api/<AppUserController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(string id, [FromBody] AppUser appUser)
+        public async Task<ActionResult> Put(string id, [FromBody] AppUserDTO appUserDTO)
         {
-            if (id != appUser.Id)
-            {
-                return BadRequest();
-            }
-
             var user = await Context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
                 return BadRequest();
             }
 
-            user = appUser;
+            user.UserName = appUserDTO.UserName;
+            user.Email = appUserDTO.Email;
 
             await Context.SaveChangesAsync();
             return NoContent();
