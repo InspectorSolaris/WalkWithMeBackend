@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Itinero;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WalkWithMeBackend.Data;
@@ -17,18 +18,18 @@ namespace WalkWithMeBackend.Controllers
     [ApiController]
     public class AppUsersController : ControllerBase
     {
-        private AppDbContext Context { get; }
+        private UserManager<AppUser> UserManager { get; set; }
 
-        public AppUsersController(AppDbContext context)
+        public AppUsersController(UserManager<AppUser> userManager)
         {
-            this.Context = context;
+            this.UserManager = userManager;
         }
 
         // GET: api/<AppUserController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppUserDTO>>> Get()
         {
-            return await Context.AppUsers
+            return await UserManager.Users
                 .Select(x => new AppUserDTO(x))
                 .ToListAsync();
         }
@@ -37,7 +38,7 @@ namespace WalkWithMeBackend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUserDTO>> Get(string id)
         {
-            var appUser = await Context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
+            var appUser = await UserManager.FindByIdAsync(id);
             if (appUser == null)
             {
                 return NotFound();
@@ -57,9 +58,12 @@ namespace WalkWithMeBackend.Controllers
                 Created = DateTime.Now
             };
 
-            Context.AppUsers.Add(appUser);
+            var result = await UserManager.CreateAsync(appUser, appUserDTO.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
 
-            await Context.SaveChangesAsync();
             return NoContent();
         }
 
@@ -67,16 +71,31 @@ namespace WalkWithMeBackend.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(string id, [FromBody] AppUserDTO appUserDTO)
         {
-            var user = await Context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
-            if (user == null)
+            var appUser = await UserManager.FindByIdAsync(id);
+            if (appUser == null)
             {
                 return BadRequest();
             }
 
-            user.UserName = appUserDTO.UserName;
-            user.Email = appUserDTO.Email;
+            appUser.UserName = appUserDTO.UserName;
+            appUser.Email = appUserDTO.Email;
 
-            await Context.SaveChangesAsync();
+            if (appUserDTO.Password != null)
+            {
+                var resetToken = await UserManager.GeneratePasswordResetTokenAsync(appUser);
+                var resetResult = await UserManager.ResetPasswordAsync(appUser, resetToken, appUserDTO.Password);
+                if (!resetResult.Succeeded)
+                {
+                    return BadRequest();
+                }
+            }
+
+            var result = await UserManager.UpdateAsync(appUser);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
             return NoContent();
         }
 
@@ -84,15 +103,18 @@ namespace WalkWithMeBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            var appUser = await Context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
+            var appUser = await UserManager.FindByIdAsync(id);
             if (appUser == null)
             {
                 return BadRequest();
             }
 
-            Context.AppUsers.Remove(appUser);
+            var result = await UserManager.DeleteAsync(appUser);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
 
-            await Context.SaveChangesAsync();
             return NoContent();
         }
     }
