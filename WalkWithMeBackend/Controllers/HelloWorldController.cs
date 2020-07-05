@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WalkWithMeBackend.Model.DTO;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,30 +23,30 @@ namespace WalkWithMeBackend.Controllers
 
         // GET api/<TestController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public HelloWorldDTO Get(int id)
         {
-            return $"Hellow world! GET({id})";
+            return new HelloWorldDTO($"Hellow world! GET({id})");
         }
 
         // POST api/<TestController>
         [HttpPost]
-        public string Post([FromBody] string value)
+        public HelloWorldDTO Post([FromBody] string value)
         {
-            return $"Hellow world! POST({value})";
+            return new HelloWorldDTO($"Hellow world! POST({value})");
         }
 
         // PUT api/<TestController>/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody] string value)
+        public HelloWorldDTO Put(int id, [FromBody] string value)
         {
-            return $"Hellow world! PUT({id}, {value})";
+            return new HelloWorldDTO($"Hellow world! PUT({id}, {value})");
         }
 
         // DELETE api/<TestController>/5
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public HelloWorldDTO Delete(int id)
         {
-            return $"Hellow world! DELETE({id})";
+            return new HelloWorldDTO($"Hellow world! DELETE({id})");
         }
     }
 }
